@@ -48,3 +48,5 @@ public class CertificacionController {
         return ResponseEntity.status(404).body("Certificacion no encontrada");
     }
 }
+
+
