@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.*;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/resenas")
@@ -48,3 +49,4 @@ public class ResenaController {
         return ResponseEntity.status(404).body("Resena no encontrada");
     }
 }
+
