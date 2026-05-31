@@ -1,4 +1,5 @@
 package com.sushi.registrosucursal.controller;
+
 import com.sushi.registrosucursal.model.Sucursal;
 import com.sushi.registrosucursal.service.SucursalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.*;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/sucursales")
@@ -48,3 +50,4 @@ public class SucursalController {
         return ResponseEntity.status(404).body("Sucursal no encontrada");
     }
 }
+
