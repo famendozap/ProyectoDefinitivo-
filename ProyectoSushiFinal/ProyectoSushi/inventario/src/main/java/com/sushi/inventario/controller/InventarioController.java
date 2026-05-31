@@ -48,3 +48,5 @@ public class InventarioController {
         return ResponseEntity.status(404).body("Producto no encontrado");
     }
 }
+
+
