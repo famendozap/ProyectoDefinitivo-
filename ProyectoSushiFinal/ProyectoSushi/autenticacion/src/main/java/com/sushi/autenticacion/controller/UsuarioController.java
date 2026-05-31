@@ -93,3 +93,5 @@ public class UsuarioController {
         return "ADMIN".equalsIgnoreCase(jwtUtil.extraerRol(token));
     }
 }
+
+
