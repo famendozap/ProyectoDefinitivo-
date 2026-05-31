@@ -1,4 +1,5 @@
 package com.sushi.registroventas.controller;
+
 import com.sushi.registroventas.dto.InventarioDTO;
 import com.sushi.registroventas.dto.PagoDTO;
 import com.sushi.registroventas.model.Venta;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/ventas")
@@ -62,3 +64,4 @@ public class VentaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 }
+
