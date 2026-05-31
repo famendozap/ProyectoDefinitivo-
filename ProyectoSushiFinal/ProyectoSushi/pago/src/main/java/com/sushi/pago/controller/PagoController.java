@@ -1,4 +1,5 @@
 package com.sushi.pago.controller;
+
 import com.sushi.pago.model.Pago;
 import com.sushi.pago.service.PagoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.*;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/pagos")
@@ -48,3 +50,4 @@ public class PagoController {
         return ResponseEntity.status(404).body("Pago no encontrado");
     }
 }
+
