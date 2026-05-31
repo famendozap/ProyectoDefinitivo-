@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.*;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/notificaciones")
@@ -61,3 +62,4 @@ public ResponseEntity<?> consultarUsuario(@PathVariable Integer idUsuario) {
         return ResponseEntity.status(404).body("Notificacion no encontrada");
     }
 }
+
