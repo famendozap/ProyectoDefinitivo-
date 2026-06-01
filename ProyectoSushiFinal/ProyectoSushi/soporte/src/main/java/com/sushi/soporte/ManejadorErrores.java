@@ -1,4 +1,6 @@
 package com.sushi.soporte;
+
+
 import com.sushi.soporte.dto.ErrorDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+
 @RestControllerAdvice
 public class ManejadorErrores {
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -58,3 +61,4 @@ public class ManejadorErrores {
         return ResponseEntity.status(500).body(errorDTO);
     }
 }
+
