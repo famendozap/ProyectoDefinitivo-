@@ -1,4 +1,5 @@
 package com.sushi.soporte.controller;
+
 import com.sushi.soporte.model.Ticket;
 import com.sushi.soporte.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.*;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/tickets")
@@ -52,3 +54,4 @@ public class TicketController {
         return ResponseEntity.status(404).body("Ticket no encontrado");
     }
 }
+
