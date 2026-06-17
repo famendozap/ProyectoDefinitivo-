@@ -1,6 +1,11 @@
 package com.sushi.inventario.controller;
 import com.sushi.inventario.model.Inventario;
 import com.sushi.inventario.service.InventarioService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +18,19 @@ import java.util.List;
 public class InventarioController {
     @Autowired
     private InventarioService service;
+
+    @Operation(
+        summary = "Listar inventario",
+        description = "Obtiene una lista con todos los productos registrados en el sistema"
+    )
+
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente"),
+        @ApiResponse(responseCode = "204", description = "No hay nada que listar"),
+        @ApiResponse(responseCode = "400", description = "Datos invalidos"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+
     @GetMapping("/listar")
     public ResponseEntity<List<Inventario>> listar() { return ResponseEntity.ok(service.listar()); }
     @GetMapping("/id/{id}")
