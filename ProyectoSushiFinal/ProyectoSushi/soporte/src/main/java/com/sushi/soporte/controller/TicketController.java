@@ -52,6 +52,18 @@ public class TicketController {
                 .map(t -> ResponseEntity.ok("Ticket de soporte actualizado correctamente"))
                 .orElse(ResponseEntity.status(404).body("Ticket no encontrado"));
     }
+
+    @Operation(
+        summary = "Eliminar ticket de soporte",
+        description = "Elimina un ticket de soporte según su ID"
+    )
+
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Ticket eliminado correctamente"),
+        @ApiResponse(responseCode = "404", description = "Ticket no encontrado"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         if (service.eliminar(id)) return ResponseEntity.ok("Ticket de soporte eliminado correctamente");
