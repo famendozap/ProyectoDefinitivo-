@@ -1,5 +1,9 @@
 package com.sushi.pago.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import com.sushi.pago.model.Pago;
 import com.sushi.pago.service.PagoService;
 import org.springframework.beans.factory.annotation.Autowired;

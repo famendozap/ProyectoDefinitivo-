@@ -1,4 +1,9 @@
 package com.sushi.certificacion.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import com.sushi.certificacion.model.Certificacion;
 import com.sushi.certificacion.service.CertificacionService;
 import org.springframework.beans.factory.annotation.Autowired;

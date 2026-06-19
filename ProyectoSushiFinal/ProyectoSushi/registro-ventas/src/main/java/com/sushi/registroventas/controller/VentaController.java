@@ -1,5 +1,9 @@
 package com.sushi.registroventas.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import com.sushi.registroventas.dto.InventarioDTO;
 import com.sushi.registroventas.dto.PagoDTO;
 import com.sushi.registroventas.model.Venta;

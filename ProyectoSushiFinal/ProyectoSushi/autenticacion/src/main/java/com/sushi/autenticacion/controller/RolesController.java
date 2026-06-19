@@ -1,4 +1,9 @@
 package com.sushi.autenticacion.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import com.sushi.autenticacion.model.Roles;
 import com.sushi.autenticacion.service.RolesService;
 import org.springframework.beans.factory.annotation.Autowired;

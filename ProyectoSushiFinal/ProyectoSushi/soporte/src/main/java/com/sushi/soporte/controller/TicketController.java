@@ -1,5 +1,9 @@
 package com.sushi.soporte.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import com.sushi.soporte.model.Ticket;
 import com.sushi.soporte.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;

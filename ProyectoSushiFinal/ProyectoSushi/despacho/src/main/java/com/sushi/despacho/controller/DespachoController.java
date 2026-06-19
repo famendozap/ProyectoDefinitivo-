@@ -1,4 +1,9 @@
 package com.sushi.despacho.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import com.sushi.despacho.dto.PagoDTO;
 import com.sushi.despacho.model.Despacho;
 import com.sushi.despacho.service.DespachoService;
