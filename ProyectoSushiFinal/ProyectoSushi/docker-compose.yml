@@ -1,0 +1,201 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: sushi-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: sushi123
+    ports:
+      - "3307:3306"
+    volumes:
+      - sushi_mysql_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - sushi-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-psushi123"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  eureka-server:
+    build: ./eureka-server
+    container_name: sushi-eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - sushi-net
+
+  autenticacion:
+    build: ./autenticacion
+    container_name: sushi-autenticacion
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8090:8090"
+    depends_on:
+      mysql: { condition: service_healthy }
+      eureka-server: { condition: service_started }
+    networks:
+      - sushi-net
+    restart: on-failure
+
+  inventario:
+    build: ./inventario
+    container_name: sushi-inventario
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8091:8091"
+    depends_on:
+      mysql: { condition: service_healthy }
+      eureka-server: { condition: service_started }
+    networks:
+      - sushi-net
+    restart: on-failure
+
+  registro-sucursal:
+    build: ./registro-sucursal
+    container_name: sushi-registro-sucursal
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8092:8092"
+    depends_on:
+      mysql: { condition: service_healthy }
+      eureka-server: { condition: service_started }
+    networks:
+      - sushi-net
+    restart: on-failure
+
+  pago:
+    build: ./pago
+    container_name: sushi-pago
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8093:8093"
+    depends_on:
+      mysql: { condition: service_healthy }
+      eureka-server: { condition: service_started }
+    networks:
+      - sushi-net
+    restart: on-failure
+
+  despacho:
+    build: ./despacho
+    container_name: sushi-despacho
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8094:8094"
+    depends_on:
+      mysql: { condition: service_healthy }
+      eureka-server: { condition: service_started }
+      pago: { condition: service_started }
+    networks:
+      - sushi-net
+    restart: on-failure
+
+  certificacion:
+    build: ./certificacion
+    container_name: sushi-certificacion
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8095:8095"
+    depends_on:
+      mysql: { condition: service_healthy }
+      eureka-server: { condition: service_started }
+    networks:
+      - sushi-net
+    restart: on-failure
+
+  registro-ventas:
+    build: ./registro-ventas
+    container_name: sushi-registro-ventas
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8096:8096"
+    depends_on:
+      mysql: { condition: service_healthy }
+      eureka-server: { condition: service_started }
+      inventario: { condition: service_started }
+      pago: { condition: service_started }
+    networks:
+      - sushi-net
+    restart: on-failure
+
+  resena:
+    build: ./resena
+    container_name: sushi-resena
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8097:8097"
+    depends_on:
+      mysql: { condition: service_healthy }
+      eureka-server: { condition: service_started }
+    networks:
+      - sushi-net
+    restart: on-failure
+
+  notificacion:
+    build: ./notificacion
+    container_name: sushi-notificacion
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8098:8098"
+    depends_on:
+      mysql: { condition: service_healthy }
+      eureka-server: { condition: service_started }
+      autenticacion: { condition: service_started }
+    networks:
+      - sushi-net
+    restart: on-failure
+
+  soporte:
+    build: ./soporte
+    container_name: sushi-soporte
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8099:8099"
+    depends_on:
+      mysql: { condition: service_healthy }
+      eureka-server: { condition: service_started }
+    networks:
+      - sushi-net
+    restart: on-failure
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: sushi-api-gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      eureka-server: { condition: service_started }
+      autenticacion: { condition: service_started }
+      inventario: { condition: service_started }
+      registro-sucursal: { condition: service_started }
+      pago: { condition: service_started }
+      despacho: { condition: service_started }
+      certificacion: { condition: service_started }
+      registro-ventas: { condition: service_started }
+      resena: { condition: service_started }
+      notificacion: { condition: service_started }
+      soporte: { condition: service_started }
+    networks:
+      - sushi-net
+    restart: on-failure
+
+networks:
+  sushi-net:
+    driver: bridge
+
+volumes:
+  sushi_mysql_data:

@@ -1,0 +1,11 @@
+
+CREATE DATABASE IF NOT EXISTS sushi_auth_db;
+CREATE DATABASE IF NOT EXISTS sushi_inventario_db;
+CREATE DATABASE IF NOT EXISTS sushi_sucursal_db;
+CREATE DATABASE IF NOT EXISTS sushi_pago_db;
+CREATE DATABASE IF NOT EXISTS sushi_despacho_db;
+CREATE DATABASE IF NOT EXISTS sushi_certificacion_db;
+CREATE DATABASE IF NOT EXISTS sushi_ventas_db;
+CREATE DATABASE IF NOT EXISTS sushi_resena_db;
+CREATE DATABASE IF NOT EXISTS sushi_notificacion_db;
+CREATE DATABASE IF NOT EXISTS sushi_soporte_db;
