@@ -1,0 +1,95 @@
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      # default-filters: se aplican a TODAS las rutas, sin tener que repetirlos
+      # en cada una. Aqui se agrega:
+      # 1) Un header que identifica que la peticion paso por el Gateway
+      #    (util para que los microservicios/logs distingan trafico directo
+      #    de trafico que vino a traves del Gateway).
+      # 2) Una regla de reintento: si el microservicio destino responde
+      #    503/504, el Gateway reintenta automaticamente hasta 2 veces,
+      #    pero SOLO para peticiones GET (idempotentes) - nunca para
+      #    POST/PUT/DELETE, donde reintentar podria duplicar una operacion.
+      default-filters:
+        - AddRequestHeader=X-Gateway-Origin,api-gateway
+        - name: Retry
+          args:
+            retries: 2
+            statuses: SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT
+            methods: GET
+      routes:
+
+        - id: ruta-autenticacion
+          uri: lb://AUTENTICACION
+          predicates:
+            - Path=/usuarios/**,/auth/**,/usuario-rol/**,/roles/**
+
+        - id: ruta-inventario
+          uri: lb://INVENTARIO
+          predicates:
+            - Path=/inventario/**
+
+        - id: ruta-sucursales
+          uri: lb://REGISTRO-SUCURSAL
+          predicates:
+            - Path=/sucursales/**
+
+        - id: ruta-pagos
+          uri: lb://PAGO
+          predicates:
+            - Path=/pagos/**
+          # Filtro especifico de esta ruta (ademas de los default-filters):
+          # marca el trafico hacia el microservicio critico de pagos.
+          filters:
+            - AddRequestHeader=X-Critical-Service,true
+
+        - id: ruta-despachos
+          uri: lb://DESPACHO
+          predicates:
+            - Path=/despachos/**
+
+        - id: ruta-certificaciones
+          uri: lb://CERTIFICACION
+          predicates:
+            - Path=/certificaciones/**
+
+        - id: ruta-ventas
+          uri: lb://REGISTRO-VENTAS
+          predicates:
+            - Path=/ventas/**
+
+        - id: ruta-resenas
+          uri: lb://RESENA
+          predicates:
+            - Path=/resenas/**
+
+        - id: ruta-notificaciones
+          uri: lb://NOTIFICACION
+          predicates:
+            - Path=/notificaciones/**
+
+        - id: ruta-tickets
+          uri: lb://SOPORTE
+          predicates:
+            - Path=/tickets/**
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
