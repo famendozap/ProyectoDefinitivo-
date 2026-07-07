@@ -1,10 +1,8 @@
 package com.sushi.resena.dto;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.Map;
-
 @Data
 @NoArgsConstructor
 public class ErrorDTO {
@@ -21,4 +19,3 @@ public class ErrorDTO {
         this.path = path;
     }
 }
-

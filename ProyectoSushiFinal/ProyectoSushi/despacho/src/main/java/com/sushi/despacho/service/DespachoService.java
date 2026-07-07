@@ -13,14 +13,15 @@ public class DespachoService {
     private DespachoRepository repository;
     @Autowired
     private RestTemplate restTemplate;
-    private static final String PAGO_URL = "http://localhost:8093/pagos/pedido/";
+
+    private static final String PAGO_URL = "http://PAGO/pagos/pedido/";
     public List<Despacho> listar() { return repository.findAll(); }
     public Optional<Despacho> buscarPorId(Integer id) { return repository.findById(id); }
     public List<Despacho> buscarPorEstado(String estado) { return repository.findByEstadoIgnoreCase(estado); }
     public List<Despacho> buscarPorTipo(String tipo) { return repository.findByTipoDespachoIgnoreCase(tipo); }
     public Optional<Despacho> buscarPorPedido(Integer idPedido) { return repository.findByIdPedido(idPedido); }
     public Despacho guardar(Despacho despacho) { return repository.save(despacho); }
-    
+
     public Optional<PagoDTO> verificarPago(Integer idPedido) {
         try {
             PagoDTO pago = restTemplate.getForObject(PAGO_URL + idPedido, PagoDTO.class);

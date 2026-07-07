@@ -19,4 +19,3 @@ public class ErrorDTO {
         this.path = path;
     }
 }
-

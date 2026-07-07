@@ -15,15 +15,16 @@ public class VentaService {
     private VentaRepository repository;
     @Autowired
     private RestTemplate restTemplate;
-    private static final String INVENTARIO_URL = "http://localhost:8091/inventario/id/";
-    private static final String PAGO_URL = "http://localhost:8093/pagos/pedido/";
+
+    private static final String INVENTARIO_URL = "http://INVENTARIO/inventario/id/";
+    private static final String PAGO_URL = "http://PAGO/pagos/pedido/";
     public List<Venta> listar() { return repository.findAll(); }
     public Optional<Venta> buscarPorId(Integer id) { return repository.findById(id); }
     public List<Venta> buscarPorSucursal(Integer idSucursal) { return repository.findByIdSucursal(idSucursal); }
     public List<Venta> buscarPorCanal(String canal) { return repository.findByCanalVentaIgnoreCase(canal); }
     public Optional<Venta> buscarPorPedido(Integer idPedido) { return repository.findByIdPedido(idPedido); }
     public Venta guardar(Venta venta) { return repository.save(venta); }
-    
+
     public Optional<InventarioDTO> consultarInventario(Integer idProducto) {
         try {
             InventarioDTO inventario = restTemplate.getForObject(INVENTARIO_URL + idProducto, InventarioDTO.class);
@@ -32,7 +33,7 @@ public class VentaService {
             return Optional.empty();
         }
     }
-    
+
     public Optional<PagoDTO> consultarPago(Integer idPedido) {
         try {
             PagoDTO pago = restTemplate.getForObject(PAGO_URL + idPedido, PagoDTO.class);

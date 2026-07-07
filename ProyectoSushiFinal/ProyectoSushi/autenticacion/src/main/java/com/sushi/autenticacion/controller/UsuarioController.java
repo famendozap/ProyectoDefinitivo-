@@ -1,9 +1,4 @@
 package com.sushi.autenticacion.controller;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-
 import com.sushi.autenticacion.dto.UsuarioDTO;
 import com.sushi.autenticacion.model.Usuario;
 import com.sushi.autenticacion.service.UsuarioService;
@@ -14,7 +9,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @CrossOrigin(origins = "*")
+@Tag(name = "Usuarios", description = "Gestion de usuarios del sistema")
+
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -22,56 +25,48 @@ public class UsuarioController {
     private UsuarioService service;
     @Autowired
     private JwtUtil jwtUtil;
-
-
     @Operation(
         summary = "Listar usuarios",
-        description = "Obtiene una lista con todos los usuarios registrados. Requiere token válido."
+        description = "Obtiene la lista completa de usuarios. Requiere header Authorization con token JWT valido."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente"),
-        @ApiResponse(responseCode = "401", description = "Token requerido o inválido"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida correctamente"),
+            @ApiResponse(responseCode = "401", description = "Token de autorizacion requerido o invalido"),
+            @ApiResponse(responseCode = "400", description = "Parametros invalidos"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @GetMapping("/listar")
+@GetMapping("/listar")
     public ResponseEntity<?> listar(@RequestHeader(value = "Authorization", required = false) String authHeader) {
         if (!tokenValido(authHeader)) return ResponseEntity.status(401).body("Token requerido. Inicia sesion primero.");
         return ResponseEntity.ok(service.listar());
     }
-
-
     @Operation(
         summary = "Buscar usuario por ID",
-        description = "Obtiene el registro de un usuario en concreto según su ID. Requiere token válido."
+        description = "Obtiene un usuario a partir de su ID."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
-        @ApiResponse(responseCode = "401", description = "Token requerido o inválido"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @GetMapping("/id/{id}")
-    public ResponseEntity<?> buscarPorId(
-            @PathVariable Integer id,
-            @RequestHeader(value = "Authorization", required = false) String authHeader) {
-        if (!tokenValido(authHeader)) return ResponseEntity.status(401).body("Token requerido.");
-        return service.buscarPorId(id)
-                .<ResponseEntity<?>>map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(404).body("Usuario no encontrado"));
+@GetMapping("/id/{id}")
+public ResponseEntity<?> buscarPorId(@PathVariable Integer id) {
+    return service.buscarPorId(id)
+            .<ResponseEntity<?>>map(ResponseEntity::ok)
+            .orElse(ResponseEntity.status(404).body("Usuario no encontrado"));
+
     }
-
-
     @Operation(
-        summary = "Buscar usuario por mail",
-        description = "Obtiene el registro de un usuario según su correo electrónico. Requiere token válido."
+        summary = "Buscar usuario por correo",
+        description = "Busca un usuario por su correo electronico. Requiere header Authorization."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
-        @ApiResponse(responseCode = "401", description = "Token requerido o inválido"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+            @ApiResponse(responseCode = "401", description = "Token de autorizacion requerido o invalido"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @GetMapping("/mail/{mail}")
+@GetMapping("/mail/{mail}")
     public ResponseEntity<?> buscarPorMail(
             @PathVariable String mail,
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
@@ -80,56 +75,51 @@ public class UsuarioController {
                 .<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).body("Usuario no encontrado"));
     }
-
-
     @Operation(
         summary = "Buscar usuarios por nombre",
-        description = "Obtiene una lista de usuarios que coincidan con el nombre indicado. Requiere token válido."
+        description = "Busca usuarios cuyo nombre coincide (parcial) con el indicado. Requiere header Authorization."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente"),
-        @ApiResponse(responseCode = "401", description = "Token requerido o inválido"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida correctamente"),
+            @ApiResponse(responseCode = "401", description = "Token de autorizacion requerido o invalido"),
+            @ApiResponse(responseCode = "400", description = "Parametros invalidos"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @GetMapping("/nombre/{nombre}")
+@GetMapping("/nombre/{nombre}")
     public ResponseEntity<?> buscarPorNombre(
             @PathVariable String nombre,
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
         if (!tokenValido(authHeader)) return ResponseEntity.status(401).body("Token requerido.");
         return ResponseEntity.ok(service.buscarPorNombre(nombre));
     }
-
-
     @Operation(
         summary = "Buscar usuarios por rol",
-        description = "Obtiene una lista de usuarios que tengan el rol indicado. Requiere token válido."
+        description = "Lista los usuarios que tienen asignado un rol especifico. Requiere header Authorization."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente"),
-        @ApiResponse(responseCode = "401", description = "Token requerido o inválido"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida correctamente"),
+            @ApiResponse(responseCode = "401", description = "Token de autorizacion requerido o invalido"),
+            @ApiResponse(responseCode = "400", description = "Parametros invalidos"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @GetMapping("/rol/{idRoles}")
+@GetMapping("/rol/{idRoles}")
     public ResponseEntity<?> buscarPorRol(
             @PathVariable Integer idRoles,
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
         if (!tokenValido(authHeader)) return ResponseEntity.status(401).body("Token requerido.");
         return ResponseEntity.ok(service.buscarPorRol(idRoles));
     }
-
-
     @Operation(
-        summary = "Agregar usuario",
-        description = "Registra un nuevo usuario en el sistema. Requiere token válido y rol ADMIN."
+        summary = "Registrar usuario",
+        description = "Crea un nuevo usuario. Requiere header Authorization con rol ADMIN."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Usuario agregado correctamente"),
-        @ApiResponse(responseCode = "400", description = "Datos invalidos"),
-        @ApiResponse(responseCode = "401", description = "Token requerido o inválido"),
-        @ApiResponse(responseCode = "403", description = "Acceso denegado, se requiere rol ADMIN"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "201", description = "Usuario creado correctamente"),
+            @ApiResponse(responseCode = "401", description = "Token de autorizacion requerido, invalido o sin permisos de ADMIN"),
+            @ApiResponse(responseCode = "400", description = "Datos invalidos"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @PostMapping("/agregar")
+@PostMapping("/agregar")
     public ResponseEntity<String> agregar(
             @Valid @RequestBody Usuario usuario,
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
@@ -138,21 +128,18 @@ public class UsuarioController {
         service.guardar(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body("Usuario agregado correctamente");
     }
-
-
     @Operation(
         summary = "Actualizar usuario",
-        description = "Actualiza los datos de un usuario según su ID. Requiere token válido y rol ADMIN."
+        description = "Actualiza los datos de un usuario existente. Requiere header Authorization con rol ADMIN."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario actualizado correctamente"),
-        @ApiResponse(responseCode = "400", description = "Datos invalidos"),
-        @ApiResponse(responseCode = "401", description = "Token requerido o inválido"),
-        @ApiResponse(responseCode = "403", description = "Acceso denegado, se requiere rol ADMIN"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Usuario actualizado correctamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "401", description = "Token de autorizacion requerido, invalido o sin permisos de ADMIN"),
+            @ApiResponse(responseCode = "400", description = "Datos invalidos"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @PutMapping("/actualizar/{id}")
+@PutMapping("/actualizar/{id}")
     public ResponseEntity<String> actualizar(
             @PathVariable Integer id,
             @Valid @RequestBody Usuario usuario,
@@ -163,20 +150,17 @@ public class UsuarioController {
                 .map(u -> ResponseEntity.ok("Usuario actualizado correctamente"))
                 .orElse(ResponseEntity.status(404).body("Usuario no encontrado"));
     }
-
-
     @Operation(
         summary = "Eliminar usuario",
-        description = "Elimina un usuario según su ID. Requiere token válido y rol ADMIN."
+        description = "Elimina un usuario del sistema. Requiere header Authorization con rol ADMIN."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario eliminado correctamente"),
-        @ApiResponse(responseCode = "401", description = "Token requerido o inválido"),
-        @ApiResponse(responseCode = "403", description = "Acceso denegado, se requiere rol ADMIN"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Usuario eliminado correctamente"),
+            @ApiResponse(responseCode = "401", description = "Token de autorizacion requerido, invalido o sin permisos de ADMIN"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @DeleteMapping("/eliminar/{id}")
+@DeleteMapping("/eliminar/{id}")
     public ResponseEntity<String> eliminar(
             @PathVariable Integer id,
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
@@ -195,5 +179,3 @@ public class UsuarioController {
         return "ADMIN".equalsIgnoreCase(jwtUtil.extraerRol(token));
     }
 }
-
-

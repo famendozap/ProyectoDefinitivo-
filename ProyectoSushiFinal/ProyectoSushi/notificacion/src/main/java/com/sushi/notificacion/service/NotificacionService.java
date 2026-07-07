@@ -13,7 +13,8 @@ public class NotificacionService {
     private NotificacionRepository repository;
     @Autowired
     private RestTemplate restTemplate;
-    private static final String USUARIO_URL = "http://localhost:8090/usuarios/id/";
+
+    private static final String USUARIO_URL = "http://AUTENTICACION/usuarios/id/";
     public List<Notificacion> listar() { return repository.findAll(); }
     public Optional<Notificacion> buscarPorId(Integer id) { return repository.findById(id); }
     public List<Notificacion> buscarPorUsuario(Integer idUsuario) { return repository.findByIdUsuario(idUsuario); }
@@ -21,7 +22,7 @@ public class NotificacionService {
     public List<Notificacion> buscarPorTipo(String tipo) { return repository.findByTipoIgnoreCase(tipo); }
     public List<Notificacion> buscarPorCanal(String canal) { return repository.findByCanalIgnoreCase(canal); }
     public Notificacion guardar(Notificacion notif) { return repository.save(notif); }
-    
+
     public Optional<UsuarioDTO> consultarUsuario(Integer idUsuario) {
         try {
             UsuarioDTO usuario = restTemplate.getForObject(USUARIO_URL + idUsuario, UsuarioDTO.class);

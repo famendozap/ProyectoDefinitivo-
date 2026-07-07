@@ -1,9 +1,4 @@
 package com.sushi.pago.controller;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-
 import com.sushi.pago.model.Pago;
 import com.sushi.pago.service.PagoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,132 +7,122 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.*;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 @CrossOrigin(origins = "*")
+@Tag(name = "Pagos", description = "Registro y consulta de pagos")
 @RestController
 @RequestMapping("/pagos")
 public class PagoController {
     @Autowired
     private PagoService service;
-
     @Operation(
         summary = "Listar pagos",
-        description = "Obtiene una lista con todos los pagos registrados en el sistema"
+        description = "Obtiene la lista completa de pagos registrados en el sistema."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Lista de pagos obtenida correctamente"),
+            @ApiResponse(responseCode = "400", description = "Parametros invalidos"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-
-    @GetMapping("/listar")
+@GetMapping("/listar")
     public ResponseEntity<List<Pago>> listar() { return ResponseEntity.ok(service.listar()); }
-
     @Operation(
         summary = "Buscar pago por ID",
-        description = "Obtiene el registro de un pago en concreto según su ID"
+        description = "Obtiene un(a) pago a partir de su ID."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Pago encontrado"),
-        @ApiResponse(responseCode = "404", description = "Pago no encontrado"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Pago encontrado"),
+            @ApiResponse(responseCode = "404", description = "Pago no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-
-    @GetMapping("/id/{id}")
+@GetMapping("/id/{id}")
     public ResponseEntity<Pago> buscarPorId(@PathVariable Integer id) {
         return service.buscarPorId(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
-
     @Operation(
         summary = "Buscar pagos por estado",
-        description = "Obtiene una lista de pagos filtrados por su estado (pendiente, completado, etc.)"
+        description = "Lista los/las pagos que coinciden con el/la estado indicado(a)."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Lista de pagos obtenida correctamente"),
+            @ApiResponse(responseCode = "400", description = "Parametros invalidos"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-
-    @GetMapping("/estado/{estado}")
+@GetMapping("/estado/{estado}")
     public ResponseEntity<List<Pago>> buscarPorEstado(@PathVariable String estado) {
         return ResponseEntity.ok(service.buscarPorEstado(estado));
     }
-
     @Operation(
-        summary = "Buscar pagos por método de pago",
-        description = "Obtiene una lista de pagos filtrados por el método utilizado"
+        summary = "Buscar pagos por metodo de pago",
+        description = "Lista los/las pagos que coinciden con el/la metodo de pago indicado(a)."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Lista de pagos obtenida correctamente"),
+            @ApiResponse(responseCode = "400", description = "Parametros invalidos"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-
-    @GetMapping("/metodo/{metodoPago}")
+@GetMapping("/metodo/{metodoPago}")
     public ResponseEntity<List<Pago>> buscarPorMetodo(@PathVariable String metodoPago) {
         return ResponseEntity.ok(service.buscarPorMetodo(metodoPago));
     }
-
     @Operation(
-        summary = "Buscar pago por pedido",
-        description = "Obtiene el pago asociado a un pedido específico"
+        summary = "Buscar pago por numero de pedido",
+        description = "Obtiene un(a) pago segun el/la numero de pedido indicado(a)."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Pago encontrado"),
-        @ApiResponse(responseCode = "404", description = "No existe pago para ese pedido"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Pago encontrado"),
+            @ApiResponse(responseCode = "404", description = "Pago no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-
-    @GetMapping("/pedido/{idPedido}")
+@GetMapping("/pedido/{idPedido}")
     public ResponseEntity<Pago> buscarPorPedido(@PathVariable Integer idPedido) {
         return service.buscarPorPedido(idPedido).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
-
     @Operation(
         summary = "Registrar pago",
-        description = "Registra un nuevo pago en el sistema"
+        description = "Crea un nuevo registro de pago en el sistema."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Pago registrado correctamente"),
-        @ApiResponse(responseCode = "400", description = "Datos invalidos"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "201", description = "Pago creado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos invalidos"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-
-    @PostMapping("/agregar")
+@PostMapping("/agregar")
     public ResponseEntity<String> agregar(@Valid @RequestBody Pago pago) {
         service.guardar(pago);
         return ResponseEntity.status(HttpStatus.CREATED).body("Pago registrado correctamente");
     }
-
     @Operation(
         summary = "Actualizar pago",
-        description = "Actualiza los datos de un pago según su ID"
+        description = "Actualiza los datos de un(a) pago existente segun su ID."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Pago actualizado correctamente"),
-        @ApiResponse(responseCode = "400", description = "Datos invalidos"),
-        @ApiResponse(responseCode = "404", description = "Pago no encontrado"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Pago actualizado correctamente"),
+            @ApiResponse(responseCode = "404", description = "Pago no encontrado"),
+            @ApiResponse(responseCode = "400", description = "Datos invalidos"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-
-    @PutMapping("/actualizar/{id}")
+@PutMapping("/actualizar/{id}")
     public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody Pago pago) {
         return service.actualizar(id, pago)
                 .map(p -> ResponseEntity.ok("Pago actualizado correctamente"))
                 .orElse(ResponseEntity.status(404).body("Pago no encontrado"));
     }
-
     @Operation(
         summary = "Eliminar pago",
-        description = "Elimina un registro de pago según su ID"
+        description = "Elimina un(a) pago del sistema segun su ID."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Pago eliminado correctamente"),
-        @ApiResponse(responseCode = "404", description = "Pago no encontrado"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Pago eliminado correctamente"),
+            @ApiResponse(responseCode = "404", description = "Pago no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-
-    @DeleteMapping("/eliminar/{id}")
+@DeleteMapping("/eliminar/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         if (service.eliminar(id)) return ResponseEntity.ok("Pago eliminado correctamente");
         return ResponseEntity.status(404).body("Pago no encontrado");
     }
 }
-

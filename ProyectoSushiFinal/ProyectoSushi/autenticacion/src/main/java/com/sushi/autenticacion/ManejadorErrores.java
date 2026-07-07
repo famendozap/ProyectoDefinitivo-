@@ -2,6 +2,7 @@ package com.sushi.autenticacion;
 import com.sushi.autenticacion.dto.ErrorDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,22 @@ public class ManejadorErrores {
         );
         return ResponseEntity.status(409).body(errorDTO);
     }
+    @ExceptionHandler(ResourceAccessException.class)
+    public ResponseEntity<ErrorDTO> manejarServicioNoDisponible(
+            ResourceAccessException ex,
+            HttpServletRequest request) {
+        Map<String, String> errores = new HashMap<>();
+        errores.put("servicio_remoto", "Un microservicio dependiente no respondio o no esta disponible");
+        ErrorDTO errorDTO = new ErrorDTO(
+            LocalDateTime.now(),
+            503,
+            "Servicio no disponible",
+            errores,
+            request.getRequestURI()
+        );
+        return ResponseEntity.status(503).body(errorDTO);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDTO> manejarErrorGeneral(
             Exception ex,
@@ -58,5 +75,3 @@ public class ManejadorErrores {
         return ResponseEntity.status(500).body(errorDTO);
     }
 }
-
-

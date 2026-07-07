@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.Map;
 @Data
 @NoArgsConstructor
-
 public class ErrorDTO {
     private LocalDateTime timestamp;
     private int status;
@@ -20,5 +19,3 @@ public class ErrorDTO {
         this.path = path;
     }
 }
-
-

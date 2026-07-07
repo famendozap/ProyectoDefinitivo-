@@ -18,6 +18,9 @@ public class UsuarioRolService {
     public List<UsuarioRol> buscarPorRol(Integer idRol) {
         return repository.findByRolId(idRol);
     }
+    public List<UsuarioRol> buscarPorUsuario(Integer idUsuario) {
+        return repository.findByUsuarioId(idUsuario);
+    }
     public UsuarioRol guardar(UsuarioRol usuarioRol) {
         return repository.save(usuarioRol);
     }

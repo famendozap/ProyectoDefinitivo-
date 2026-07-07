@@ -19,12 +19,12 @@ public class DataLoader {
                 Roles admin = rolesRepo.save(new Roles(null, "ADMIN"));
                 Roles empleado = rolesRepo.save(new Roles(null, "EMPLEADO"));
                 Roles cliente = rolesRepo.save(new Roles(null, "CLIENTE"));
-                usuarioRepo.save(new Usuario(null, "Juan", "Perez", "juan.perez@sushi.com", passwordEncoder.encode("pass123"), admin));
-                usuarioRepo.save(new Usuario(null, "Maria", "Gonzalez", "maria.gonzalez@sushi.com", passwordEncoder.encode("pass456"), empleado));
-                usuarioRepo.save(new Usuario(null, "Carlos", "Ramirez", "carlos.ramirez@sushi.com", passwordEncoder.encode("pass789"), cliente));
-                usuarioRolRepo.save(new UsuarioRol(null, admin));
-                usuarioRolRepo.save(new UsuarioRol(null, empleado));
-                usuarioRolRepo.save(new UsuarioRol(null, cliente));
+                Usuario juan = usuarioRepo.save(new Usuario(null, "Juan", "Perez", "juan.perez@sushi.com", passwordEncoder.encode("pass123"), admin));
+                Usuario maria = usuarioRepo.save(new Usuario(null, "Maria", "Gonzalez", "maria.gonzalez@sushi.com", passwordEncoder.encode("pass456"), empleado));
+                Usuario carlos = usuarioRepo.save(new Usuario(null, "Carlos", "Ramirez", "carlos.ramirez@sushi.com", passwordEncoder.encode("pass789"), cliente));
+                usuarioRolRepo.save(new UsuarioRol(null, juan, admin));
+                usuarioRolRepo.save(new UsuarioRol(null, maria, empleado));
+                usuarioRolRepo.save(new UsuarioRol(null, carlos, cliente));
             }
         };
     }
